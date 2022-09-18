@@ -1,0 +1,117 @@
+﻿@using Xamarin.Essentials
+@using Button = Xamarin.Forms.PlatformConfiguration.AndroidSpecific.Button
+<Frame CornerRadius="10" BackgroundColor="Color.Gold">
+
+    <StackLayout Orientation="StackOrientation.Horizontal" HorizontalOptions="LayoutOptions.Center">
+        <Label Text="Kids learn Alphabet Game!"
+               FontAttributes="FontAttributes.Bold"
+               VerticalTextAlignment="TextAlignment.Center" FontSize="25" />
+    </StackLayout>
+
+</Frame>
+
+<Frame CornerRadius="10" BackgroundColor="Color.MediumPurple">
+    <StackLayout Orientation="StackOrientation.Horizontal" HorizontalOptions="LayoutOptions.Center">
+        <Image Source="ImageSource.FromFile(curImgName)" HeightRequest="230" WidthRequest="230" />
+
+    </StackLayout>
+
+</Frame>
+
+<Frame CornerRadius="10" BackgroundColor="Color.LightGreen">
+    <StackLayout Orientation="StackOrientation.Horizontal" HorizontalOptions="LayoutOptions.Center">
+        <Label Text="@(curAlphabetNM)"
+               FontAttributes="FontAttributes.Bold"
+               VerticalTextAlignment="TextAlignment.Center" FontSize="40" />
+    </StackLayout>
+
+</Frame>
+
+
+<Frame CornerRadius="8" BackgroundColor="Color.DarkBlue">
+    <StackLayout Orientation="StackOrientation.Horizontal" HorizontalOptions="LayoutOptions.Center">
+        <Button Text="<<" BackgroundColor="Color.LightSkyBlue" OnClick="@showFirstAlphabet" />
+        <Button Text="<" BackgroundColor="Color.LightSkyBlue" OnClick="@showprevAlphabet" />
+        <Button Text=">" BackgroundColor="Color.LightSkyBlue" OnClick="@showNextAlphabet" />
+        <Button Text=">>" BackgroundColor="Color.LightSkyBlue" OnClick="@showLastAlphabet" />
+    </StackLayout>
+</Frame>
+
+<Frame CornerRadius="10" BackgroundColor="Color.DarkKhaki">
+    <StackLayout Orientation="StackOrientation.Horizontal" HorizontalOptions="LayoutOptions.Center">
+        <Button Text="Play Sound" BackgroundColor="Color.LightYellow" OnClick="@playSound" />
+    </StackLayout>
+</Frame>
+
+@code {
+    String curAlphabetNM = "A for Apple";
+    String curImgName = "Apple.png";
+
+    private static readonly string[] Alphabets = new[]
+         {
+          "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+          "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+          "U", "V", "W", "X", "Y", "Z"
+         };
+
+    private static readonly string[] AlphabetNames = new[]
+       {
+          "Apple", "Ball", "Cat", "Dog", "Elephant", "Fish", "Goat", "Hat", "IceCream", "Juice",
+          "kite", "Lion", "Mouse", "Nest", "Orange", "Pencil", "Queen", "Rose", "Sun", "Toy",
+          "Umbrella", "Van", "Watch", "Xylophone", "Yellow", "Zebra"
+         };
+
+    int CurrentIndex = 0;
+    int maxAlphabetValue = 25;
+
+    void showFirstAlphabet()
+    {
+        CurrentIndex = 0;
+        playSound();
+    }
+
+    void showNextAlphabet()
+    {
+        if (CurrentIndex < maxAlphabetValue)
+        {
+            CurrentIndex = CurrentIndex + 1;
+        }
+
+        playSound();
+    }
+
+    void showprevAlphabet()
+    {
+        if (CurrentIndex > 0)
+        {
+            CurrentIndex = CurrentIndex - 1;
+        }
+
+        playSound();
+    }
+
+    void showLastAlphabet()
+    {
+        CurrentIndex = maxAlphabetValue;
+        playSound();
+    }
+
+    void playSound()
+    {
+        curAlphabetNM = Alphabets[CurrentIndex].ToString() + " for " + AlphabetNames[CurrentIndex].ToString();
+
+        curImgName = AlphabetNames[CurrentIndex].ToString() + ".png";
+
+        var settings = new SpeechOptions()
+        {
+            Volume = 1.0f,
+            Pitch = 0.5f
+        };
+
+        Xamarin.Essentials.TextToSpeech.SpeakAsync(curAlphabetNM, settings).ContinueWith((t) =>
+        {
+        }, TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+
+}
